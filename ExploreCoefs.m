@@ -64,8 +64,15 @@ for m = 1:5
         
         clear  coefs  allPredMat
         
+        
+        
+         load(['/Volumes/Cerebro/Recording Data/',Name,'/Neurons.mat'])
+         
+         nShank{s} = cell2mat(Neurons(:,3));
+        
+        
         s = s+1;
-        clearvars -except m ss  sessionsMap s coefsS coefsO featsO featsS
+        clearvars -except m ss  sessionsMap s coefsS coefsO featsO featsS nShank
     end
 end
 
@@ -206,3 +213,105 @@ plot(3,mean(corrs(:,3)),'*')
 hold on
 errorbar(3,mean(corrs(:,3)),std(corrs(:,3))/sqrt(length(corrs(:,3))))
 hold on
+
+
+% Exploration of location per shank of neurons coefs 
+
+% Calculate shank importance
+
+shanks = 1:6;
+
+for s = 1:16
+    
+%     % Stop trial speeds
+%     allFrS1 = frS1{s}(:,nShank{s} ~= 7);
+%     allCoefS1 = cS1{s}(nShank{s} ~= 7);
+%     allImpS1 = sum(allFrS1 * abs(allCoefS1));
+%     
+%     % No Stop trial speeds
+%     allFrS2 = frS2{s}(:,nShank{s} ~= 7);
+%     allCoefS2 = cS2{s}(nShank{s} ~= 7);
+%     allImpS2 = sum(allFrS2 * abs(allCoefS2));
+%     
+%     % Trial outcomes
+%     allFrO = frO{s}(:,nShank{s} ~= 7);
+%     allCoefO = cO{s}(nShank{s} ~= 7);
+%     allImpO = sum(allFrO * abs(allCoefO));
+    
+    for sk = shanks
+        
+         nSkImps{1}{s,sk} = featImp{s}(nShank{s} == sk,1);
+         nSkImps{2}{s,sk} = featImp{s}(nShank{s} == sk,2);
+         nSkImps{3}{s,sk} = featImp{s}(nShank{s} == sk,3);
+        
+         skImp{1}(s,sk) =  mean(nSkImps{1}{s,sk});
+         skImp{2}(s,sk) =  mean(nSkImps{2}{s,sk});
+         skImp{3}(s,sk) =  mean(nSkImps{3}{s,sk});
+        
+        
+        
+%          skFrS1 = frS1{s}(:,nShank{s} == sk);
+%          skCoefS1 = cS1{s}(nShank{s} == sk);
+%          skImpS1 = sum(skFrS1 * abs(skCoefS1));
+%          
+%          skFrS2 = frS2{s}(:,nShank{s} == sk);
+%          skCoefS2 = cS2{s}(nShank{s} == sk);
+%          skImpS2 = sum(skFrS2 * abs(skCoefS2));
+%          
+%          skFrO = frO{s}(:,nShank{s} == sk);
+%          skCoefO = cO{s}(nShank{s} == sk);
+%          skImpO = sum(skFrO * abs(skCoefO));
+%          
+%          
+%         skImp{1}(s,sk) =  skImpS1 / allImpS1;
+%         skImp{2}(s,sk) =  skImpS2 / allImpS2;
+%         skImp{3}(s,sk) =  skImpO / allImpO;
+    end
+    
+end
+
+% Plot example session 
+
+s = 2;
+
+filt = nShank{s} ~= 7;
+subplot(2,3,1)
+scatter(nShank{s}(filt),featImp{s}(filt,1)) 
+hold on
+for i = 1:6
+errorbar(i,mean(featImp{s}(nShank{s}==i,1)),std(featImp{s}(nShank{s}==i,1))/sqrt(sum(nShank{s}==i)),'*')
+hold on
+end
+
+subplot(2,3,2)
+scatter(nShank{s}(filt),featImp{s}(filt,2)) 
+hold on
+for i = 1:6
+errorbar(i,mean(featImp{s}(nShank{s}==i,2)),std(featImp{s}(nShank{s}==i,2))/sqrt(sum(nShank{s}==i)),'*')
+hold on
+end
+
+subplot(2,3,3)
+scatter(nShank{s}(filt),featImp{s}(filt,3)) 
+hold on
+for i = 1:6
+errorbar(i,mean(featImp{s}(nShank{s}==i,3)),std(featImp{s}(nShank{s}==i,3))/sqrt(sum(nShank{s}==i)),'*')
+hold on
+end
+
+
+
+jitters = linspace(-1.8,1.8,16);
+xShanks = linspace(1,30,6);
+for i = 1:6
+    for s = 1:16
+        errorbar(xShanks(i)+jitters(s),mean(featImp{s}(nShank{s}==i,1)),std(featImp{s}(nShank{s}==i,1))/sqrt(sum(nShank{s}==i)),'*')
+        hold on
+    end 
+end
+
+
+
+
+
+
