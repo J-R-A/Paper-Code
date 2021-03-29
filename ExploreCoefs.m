@@ -89,10 +89,8 @@ for s = 1:length(coefsS(:,1))
     c2 = corrcoef(cS1{s},cO{s});
     c3 = corrcoef(cS2{s},cO{s});
     
-    cS1S2(s) = c1(1,2);
-    cS1O(s) = c2(1,2);
-    cS2O(s) = c3(1,2);
-    
+    corrs(s,:) = [c1(1,2), c2(1,2), c3(1,2)];
+   
     % calculate feature importance
     
     
@@ -177,8 +175,34 @@ bar(mean(treshNum))
 hold on 
 errorbar(mean(treshNum),std(treshNum)/sqrt(length(treshNum(:,1))))
 
+% Scatters and correlations of coefs of different models for example session 
+
+s = 1;
+
+subplot(2,2,1) 
+scatter(cS1{s},cS2{s})
+subplot(2,2,2) 
+scatter(cS1{s},cO{s})
+subplot(2,2,4)
+scatter(cS2{s},cO{s})
 
 
-
-
-
+subplot(2,2,3)
+scatter(ones(1,length(corrs)),corrs(:,1),'o')
+hold on
+plot(1,mean(corrs(:,1)),'*')
+hold on
+errorbar(1,mean(corrs(:,1)),std(corrs(:,1))/sqrt(length(corrs(:,1))))
+hold on
+scatter(ones(1,length(corrs))*2,corrs(:,2),'o')
+hold on
+plot(2,mean(corrs(:,2)),'*')
+hold on
+errorbar(2,mean(corrs(:,2)),std(corrs(:,2))/sqrt(length(corrs(:,2))))
+hold on
+scatter(ones(1,length(corrs))*3,corrs(:,3),'o')
+hold on
+plot(3,mean(corrs(:,3)),'*')
+hold on
+errorbar(3,mean(corrs(:,3)),std(corrs(:,3))/sqrt(length(corrs(:,3))))
+hold on
