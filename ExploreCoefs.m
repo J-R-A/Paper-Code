@@ -211,36 +211,60 @@ ax.XTickLabel = {'Speed Stop','Speed No Stop','Trial Id'};
 
 % Scatters and correlations of coefs of different models for example session 
 
-s = 1;
+s = 2;
 
 subplot(2,2,1) 
-scatter(cS1{s},cS2{s})
+scatter(cS1{s},cS2{s},[],hitsColor,'filled')
+xlim([-0.5 0.5])
+ylim([-0.5 0.5])
+text(0.15,-0.4,['CorrCoef: ',num2str(round(corrs(s,1),2))])
+title('Stop Speed vs No Stop Speed')
+xlabel('coefs')
+ylabel('coefs')
 subplot(2,2,2) 
-scatter(cS1{s},cO{s})
+scatter(cS1{s},cO{s},[],faColor,'filled')
+xlim([-0.5 0.5])
+ylim([-0.5 0.5])
+text(0.15,-0.4,['CorrCoef: ',num2str(round(corrs(s,2),2))])
+title('Stop Speed vs Trial Id')
+xlabel('coefs')
+ylabel('coefs')
 subplot(2,2,4)
-scatter(cS2{s},cO{s})
+scatter(cS2{s},cO{s},[],spdColor,'filled')
+xlim([-0.5 0.5])
+ylim([-0.5 0.5])
+text(0.15,-0.4,['CorrCoef: ',num2str(round(corrs(s,3),2))])
+title('No Stop Speed vs Trial Id')
+xlabel('coefs')
+ylabel('coefs')
 
 
 subplot(2,2,3)
-scatter(ones(1,length(corrs)),corrs(:,1),'o')
+scatter(ones(1,length(corrs)),corrs(:,1),[],hitsColor,'filled','MarkerFaceAlpha',0.2)
 hold on
-plot(1,mean(corrs(:,1)),'*')
+plot(1,mean(corrs(:,1)),'o','MarkerFaceColor',hitsColor,'MarkerEdgeColor',hitsColor)
 hold on
-errorbar(1,mean(corrs(:,1)),std(corrs(:,1))/sqrt(length(corrs(:,1))))
+errorbar(1,mean(corrs(:,1)),std(corrs(:,1))/sqrt(length(corrs(:,1))),'.','Color','k')
 hold on
-scatter(ones(1,length(corrs))*2,corrs(:,2),'o')
+scatter(ones(1,length(corrs))*2,corrs(:,2),[],faColor,'filled','MarkerFaceAlpha',0.2)
 hold on
-plot(2,mean(corrs(:,2)),'*')
+plot(2,mean(corrs(:,2)),'o','MarkerFaceColor',faColor,'MarkerEdgeColor',faColor)
 hold on
-errorbar(2,mean(corrs(:,2)),std(corrs(:,2))/sqrt(length(corrs(:,2))))
+errorbar(2,mean(corrs(:,2)),std(corrs(:,2))/sqrt(length(corrs(:,2))),'.','Color','k')
 hold on
-scatter(ones(1,length(corrs))*3,corrs(:,3),'o')
+scatter(ones(1,length(corrs))*3,corrs(:,3),[],spdColor,'filled','MarkerFaceAlpha',0.2)
 hold on
-plot(3,mean(corrs(:,3)),'*')
+plot(3,mean(corrs(:,3)),'o','MarkerFaceColor',spdColor,'MarkerEdgeColor',spdColor)
 hold on
-errorbar(3,mean(corrs(:,3)),std(corrs(:,3))/sqrt(length(corrs(:,3))))
+errorbar(3,mean(corrs(:,3)),std(corrs(:,3))/sqrt(length(corrs(:,3))),'.','Color','k')
 hold on
+xlim([0.5 3.5])
+ylim([-0.6 0.8])
+ylabel('Corr Coef')
 
+ax = gca;
+ax.XTick = [1 2 3];
+ax.XTickLabel = {'S1vsS2', 'S1vsTId','S2vsTId'};
 
 % Exploration of location per shank of neurons coefs 
 
@@ -299,46 +323,97 @@ end
 
 % Plot example session 
 
-s = 2;
+s = 1;
 
 filt = nShank{s} ~= 7;
 subplot(2,3,1)
-scatter(nShank{s}(filt),featImp{s}(filt,1)) 
+scatter(nShank{s}(filt),featImp{s}(filt,1),[],hitsColor,'filled','MarkerFaceAlpha',0.15) 
 hold on
 for i = 1:6
-errorbar(i,mean(featImp{s}(nShank{s}==i,1)),std(featImp{s}(nShank{s}==i,1))/sqrt(sum(nShank{s}==i)),'*')
+errorbar(i,mean(featImp{s}(nShank{s}==i,1)),std(featImp{s}(nShank{s}==i,1))/sqrt(sum(nShank{s}==i)),'o','MarkerFaceColor',hitsColor,'MarkerEdgeColor',hitsColor,'Color','k')
 hold on
 end
+ylim([-0.05 inf])
+xlim([0.5 6.5])
+xlabel('Shanks')
+ylabel('Fraction Var Exp')
+title('Stop Speed')
+
 
 subplot(2,3,2)
-scatter(nShank{s}(filt),featImp{s}(filt,2)) 
+scatter(nShank{s}(filt),featImp{s}(filt,2),[],faColor,'filled','MarkerFaceAlpha',0.15) 
 hold on
 for i = 1:6
-errorbar(i,mean(featImp{s}(nShank{s}==i,2)),std(featImp{s}(nShank{s}==i,2))/sqrt(sum(nShank{s}==i)),'*')
+errorbar(i,mean(featImp{s}(nShank{s}==i,2)),std(featImp{s}(nShank{s}==i,2))/sqrt(sum(nShank{s}==i)),'o','MarkerFaceColor',faColor,'MarkerEdgeColor',faColor,'Color','k')
 hold on
 end
+ylim([-0.05 inf])
+xlim([0.5 6.5])
+xlabel('Shanks')
+ylabel('Fraction Var Exp')
+title('No Stop Speed')
 
 subplot(2,3,3)
-scatter(nShank{s}(filt),featImp{s}(filt,3)) 
+scatter(nShank{s}(filt),featImp{s}(filt,3),[],spdColor,'filled','MarkerFaceAlpha',0.15) 
 hold on
 for i = 1:6
-errorbar(i,mean(featImp{s}(nShank{s}==i,3)),std(featImp{s}(nShank{s}==i,3))/sqrt(sum(nShank{s}==i)),'*')
+errorbar(i,mean(featImp{s}(nShank{s}==i,3)),std(featImp{s}(nShank{s}==i,3))/sqrt(sum(nShank{s}==i)),'o','MarkerFaceColor',spdColor,'MarkerEdgeColor',spdColor,'Color','k')
 hold on
 end
-
+ylim([-0.05 inf])
+xlim([0.5 6.5])
+xlabel('Shanks')
+ylabel('Fraction Var Exp')
+title('Trial Id')
 
 
 jitters = linspace(-1.8,1.8,16);
 xShanks = linspace(1,30,6);
+
+subplot(2,3,4)
 for i = 1:6
     for s = 1:16
-        errorbar(xShanks(i)+jitters(s),mean(featImp{s}(nShank{s}==i,1)),std(featImp{s}(nShank{s}==i,1))/sqrt(sum(nShank{s}==i)),'*')
+        errorbar(xShanks(i)+jitters(s),mean(featImp{s}(nShank{s}==i,1)),std(featImp{s}(nShank{s}==i,1))/sqrt(sum(nShank{s}==i)),'o','MarkerFaceColor',hitsColor,'MarkerEdgeColor',hitsColor,'Color','k')
         hold on
     end 
 end
+xlim([xShanks(1)-5 xShanks(end)+5])
+ylim([-0.005 inf])
+xlabel('Shanks')
+ylabel('Fraction Var Exp')
+ax = gca;
+ax.XTick = xShanks;
+ax.XTickLabel = {'1','2','3','4','5','6'};
 
+subplot(2,3,5)
+for i = 1:6
+    for s = 1:16
+        errorbar(xShanks(i)+jitters(s),mean(featImp{s}(nShank{s}==i,2)),std(featImp{s}(nShank{s}==i,2))/sqrt(sum(nShank{s}==i)),'o','MarkerFaceColor',faColor,'MarkerEdgeColor',faColor,'Color','k')
+        hold on
+    end 
+end
+xlim([xShanks(1)-5 xShanks(end)+5])
+ylim([-0.005 inf])
+xlabel('Shanks')
+ylabel('Fraction Var Exp')
+ax = gca;
+ax.XTick = xShanks;
+ax.XTickLabel = {'1','2','3','4','5','6'};
 
+subplot(2,3,6)
+for i = 1:6
+    for s = 1:16
+        errorbar(xShanks(i)+jitters(s),mean(featImp{s}(nShank{s}==i,3)),std(featImp{s}(nShank{s}==i,3))/sqrt(sum(nShank{s}==i)),'o','MarkerFaceColor',spdColor,'MarkerEdgeColor',spdColor,'Color','k')
+        hold on
+    end 
+end
+xlim([xShanks(1)-5 xShanks(end)+5])
+ylim([-0.005 inf])
+xlabel('Shanks')
+ylabel('Fraction Var Exp')
 
-
+ax = gca;
+ax.XTick = xShanks;
+ax.XTickLabel = {'1','2','3','4','5','6'};
 
 
