@@ -5,6 +5,13 @@ close all
 
 load('/Volumes/Cerebro/Recording Data/SessionsMap.mat')
 
+spdColor = [0, 119, 187] / 255;
+hitsColor = [0, 153, 136] / 255;
+faColor = [204, 51, 17] / 255;
+greyColor = [187, 187, 187] / 255;
+lightGreyColor = [220, 220, 220] / 255;
+soundColor = [238,51,119] / 255;
+
 s  = 1;
 for m = 1:5
     % :length(intSess{m,2}(1,:))
@@ -82,9 +89,9 @@ d=12;
 for s = 1:length(coefsS(:,1))
     
     % get coefs
-    cS1{s} = coefsS{s,d}{1,1}(2:end);
-    cS2{s} = coefsS{s,d}{1,2}(2:end);
-    cO{s} = coefsO{s,d}{1,1}(2:end);
+    cS1{s} = coefsS{s,d}{1,1}(2:end)';
+    cS2{s} = coefsS{s,d}{1,2}(2:end)';
+    cO{s} = coefsO{s,d}{1,1}(2:end)';
     
     % get frs
     frS1{s} = featsS{s,d}{1,1};
@@ -104,44 +111,50 @@ for s = 1:length(coefsS(:,1))
     % Stop trial speeds
     allFrS1 = frS1{s};
     allCoefS1 = cS1{s};
-    allImpS1 = sum(allFrS1 * abs(allCoefS1));
+    allImpS1 = var(allFrS1 .* repmat(allCoefS1,length(allFrS1(:,1)),1));
+    
+    featImp{s}(:,1) =  allImpS1 ./ repmat(sum(allImpS1),1,length(allImpS1));
     
     % No Stop trial speeds
     allFrS2 = frS2{s};
     allCoefS2 = cS2{s};
-    allImpS2 = sum(allFrS2 * abs(allCoefS2));
+    allImpS2 = var(allFrS2 .* repmat(allCoefS2,length(allFrS2(:,1)),1));
+    
+    featImp{s}(:,2) =  allImpS2 ./ repmat(sum(allImpS2),1,length(allImpS2));
     
     % Trial outcomes
     allFrO = frO{s};
     allCoefO = cO{s};
-    allImpO = sum(allFrO * abs(allCoefO));
+    allImpO = var(allFrO .* repmat(allCoefO,length(allFrO(:,1)),1));
     
-    for n = 1:length(frS1{s}(1,:))
-        
-        % Stop trial speeds
-        nFrS1 = frS1{s}(:,n);
-        nCoefS1 = cS1{s}(n);
-        fImpS1 = sum(abs(nFrS1 * nCoefS1));
-        
-        
-        % No Stop trial speeds
-        nFrS2 = frS2{s}(:,n);
-        nCoefS2 = cS2{s}(n);
-        fImpS2 = sum(abs(nFrS2 * nCoefS2));
-        
-        
-        % Trial outcomes
-        nFrO = frO{s}(:,n);
-        nCoefO = cO{s}(n);
-        fImpO = sum(abs(nFrO * nCoefO));
-        
-        
-        featImp{s}(n,1) =  fImpS1 / allImpS1;
-        featImp{s}(n,2) =  fImpS2 / allImpS2;
-        featImp{s}(n,3) =  fImpO / allImpO;
-        
-        
-    end
+    featImp{s}(:,3) =  allImpO ./ repmat(sum(allImpO),1,length(allImpO));
+    
+%     for n = 1:length(frS1{s}(1,:))
+%         
+%         % Stop trial speeds
+%         nFrS1 = frS1{s}(:,n);
+%         nCoefS1 = cS1{s}(n);
+%         fImpS1 = sum(abs(nFrS1 * nCoefS1));
+%         
+%         
+%         % No Stop trial speeds
+%         nFrS2 = frS2{s}(:,n);
+%         nCoefS2 = cS2{s}(n);
+%         fImpS2 = sum(abs(nFrS2 * nCoefS2));
+%         
+%         
+%         % Trial outcomes
+%         nFrO = frO{s}(:,n);
+%         nCoefO = cO{s}(n);
+%         fImpO = sum(abs(nFrO * nCoefO));
+%         
+%         
+%         featImp{s}(n,1) =  fImpS1 / allImpS1;
+%         featImp{s}(n,2) =  fImpS2 / allImpS2;
+%         featImp{s}(n,3) =  fImpO / allImpO;
+%         
+%         
+%     end
     
 end
 
@@ -167,20 +180,34 @@ s = 13;
 
 
 
-plot(featImpS1{s})
+plot(featImpS1{s},'Color',hitsColor,'LineWidth',2)
 hold on
-plot(featImpS2{s})
+plot(featImpS2{s},'Color',faColor,'LineWidth',2)
 hold on
-plot(featImpO{s})
+plot(featImpO{s},'Color',spdColor,'LineWidth',2)
 
 line([0 length(featImpS1{s})],[0.8 0.8],'Color','r','LineStyle','--')
+ylim([0 1.05])
+xlim([0 length(featImpS1{s})])
+xlabel('Sorted Neurons')
+ylabel('Fraction Variance Explained')
 
 
 % plot mean +- SEM #neurs untill treshold
+figure
+bar(1,mean(treshNum(:,1)),'FaceColor',hitsColor);
+hold on
+bar(2,mean(treshNum(:,2)),'FaceColor',faColor);
+hold on
+bar(3,mean(treshNum(:,3)),'FaceColor',spdColor);
 
-bar(mean(treshNum))
 hold on 
-errorbar(mean(treshNum),std(treshNum)/sqrt(length(treshNum(:,1))))
+errorbar(mean(treshNum),std(treshNum)/sqrt(length(treshNum(:,1))),'.','Color','k')
+
+ylabel('# neurons until Treshold')
+ax = gca;
+ax.XTick = [1 2 3];
+ax.XTickLabel = {'Speed Stop','Speed No Stop','Trial Id'};
 
 % Scatters and correlations of coefs of different models for example session 
 
