@@ -623,13 +623,17 @@ panelA1Size = [3.5 2.5];
 panelBSize = [2 2];
 panelCSize = [3.5 2.5];
 panelDSize = [2 2];
+panelESize = [2 2];
+
 
 panelA1Pos = [1 figSize(2)-panelA1Size(2)-0.5];
 panelB1Pos = [1+panelA1Size(1)+1.5 figSize(2)-panelBSize(2)-0.7];
 panelB2Pos = [1+panelA1Size(1)+panelBSize(1)+2.5 figSize(2)-panelBSize(2)-0.7];
 panelCPos = [1+panelA1Size(1)+panelBSize(1)*2+4 figSize(2)-panelCSize(2)-0.6];
 panelD1Pos = [1 figSize(2)-panelA1Size(2)-panelDSize(2)-2.2];
-panelD2Pos = [1 figSize(2)-panelA1Size(2)-panelDSize(2)*2-2.2];
+panelD2Pos = [1 figSize(2)-panelA1Size(2)-panelDSize(2)*2-3.4];
+panelE1Pos = [1+panelDSize(1)+1.7 figSize(2)-panelA1Size(2)-panelESize(2)-2.2];
+panelE2Pos = [1+panelDSize(1)+1.7 figSize(2)-panelA1Size(2)-panelESize(2)*2-3.4];
 
 
 
@@ -637,6 +641,7 @@ lAPos = [-0.8 panelA1Size(2)-0.25];
 lBPos = [-1 panelBSize(2)-0.15];
 lCPos = [-0.8 panelCSize(2)-0.25];
 lDPos = [-0.8 panelDSize(2)-0.25];
+lEPos = [-1.1 panelESize(2)-0.25];
 
 
 
@@ -1410,8 +1415,61 @@ end
 
 % Plot neurons variance explained in all predictions 
 
+% Example session 
+s = 13;
+
+axes
+box on
+plot(featImpS1{s},'Color',hitsColor)
+hold on
+plot(featImpS2{s},'Color',faColor)
+hold on
+plot(featImpO{s},'Color',spdColor)
+hold on
+text(48,0.7,'0.8 var expl','FontSize',5)
 
 
+line([0 length(featImpS1{s})],[0.8 0.8],'Color','r','LineStyle','--')
+ylim([0 1.05])
+xlim([0 length(featImpS1{s})])
+xlabel('Sorted Neurons')
+ylabel('Fract Var Explained')
+title('Example Session')
+
+axE(1) = gca;
+axE(1).XTick = [0 ceil(length(featImpS1{s})/2) length(featImpS1{s})];
+axE(1).Units = 'centimeters';
+axE(1).FontSize = 6;
+axE(1).Position = [panelE1Pos(1,1), panelE1Pos(1,2), panelESize(1), panelESize(2)];
+
+lE = text(lEPos(1),lEPos(2),'e','Units','centimeters');
+lE.FontSize = 9;
+lE.FontWeight = 'bold';
+
+% All sessions 
+
+axes
+box on
+
+bar(1,mean(treshNum(:,1)),'FaceColor',hitsColor);
+hold on
+bar(2.5,mean(treshNum(:,2)),'FaceColor',faColor);
+hold on
+bar(4,mean(treshNum(:,3)),'FaceColor',spdColor);
+
+hold on 
+errorbar([1 2.5 4],mean(treshNum),std(treshNum)/sqrt(length(treshNum(:,1))),'.','Color','k')
+
+xlim([0 5])
+ylabel('# neurons to treshold')
+title('All Sessions')
+
+axE(2) = gca;
+axE(2).XTick = [1 2.5 4];
+axE(2).XTickLabel = {'Sp.S','Sp.NS','T.Id'};
+axE(2).Units = 'centimeters';
+axE(2).FontSize = 6;
+axE(2).Position = [panelE2Pos(1,1), panelE2Pos(1,2), panelESize(1), panelESize(2)];
 
 
 % disp('Saving fig')
