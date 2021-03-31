@@ -274,9 +274,7 @@ toPlot.B{1,2}{1,3} = finalDistsOuts;
 clearvars -except toPlot sessionsMap
 
 
-%%% Load panel C data
-
-
+%%% Load panel C and D data
 
 s  = 1;
 
@@ -350,9 +348,9 @@ for m = 1:5
             dummyLapsO{c,1} = dummyLaps{1,12}(allTrials{1,12}(:,1) == tType,1);
             outTrialsO{c,1} = allTrials{1,12}(allTrials{1,12}(:,1) == tType,:);
             outDistsO{c,1} =  allDists{1,12}(allTrials{1,12}(:,1) == tType,1);
-            coefsO{s,1} = coefs{1,12};
-            
         end
+        
+        coefsO{s,1} = coefs{1,12};
         
         
         clear Laps dummyLaps allTrials coefs allPredMat
@@ -508,20 +506,106 @@ for m = 1:5
                 clear predStopsALL AllPerfAll
             end
         end
+        
+        
+        load(['/Volumes/Cerebro/Recording Data/',Name,'/Neurons.mat'])
+        nShank{s} = cell2mat(Neurons(:,3));
+        
+        
         s = s+1;
-        clearvars -except m ss perfAll sR2 dR2   toPlot sessionsMap s coefsS coefsO
+        clearvars -except m ss perfAll sR2 dR2   toPlot sessionsMap s coefsS coefsO nShank
     end
 end
 
 
 toPlot.D{1,1} = sR2;
 toPlot.D{1,2} = perfAll;
-toPlot.D{1,3} = coefsS; 
-toPlot.D{1,4} = coefsO;
-
-
 
 clearvars -except toPlot sessionsMap
+
+
+%%% Load panel E data
+
+s  = 1;
+
+for m = 1:5
+    % :length(intSess{m,2}(1,:))
+    for ss = 1:length(sessionsMap{m,2}(1,:))
+        
+        intCond = [1 3];
+        intCondO = [1 3];
+        event=[1 6];
+        eventO = [2 4];
+        stdv = 0.14 ;
+        alpha = 0.5;
+        spdSmt = 500;
+        
+        
+        Name = sessionsMap{m,2}{1,ss};
+        mouseNumber = str2num(Name(3:4)); % number of the mouse being loaded
+        rwddSound=mod(mouseNumber,2)+1; % define rewarded and and non rewarded sound based on animal number
+        nRwddSound=2-mod(mouseNumber,2);
+        sID = [rwddSound nRwddSound];
+        sID(sID == nRwddSound) = 0;
+        sID(sID == rwddSound) = 1;
+        
+        
+        
+        disp(['Processing session: ',num2str(ss),' of mice ',num2str(Name(1:4))])
+        
+        disp('Loading data')
+        
+        
+        for c = 1:length(intCond(1,:))
+            
+            load(['/Volumes/Cerebro/Recording Data/',Name,'/Predict from Neurons/SpdPredResultsTimePaper Cond_',num2str(intCond(1,c)),' TSeg_',num2str(event),' spdSmt_',num2str(spdSmt),' Sigma_', num2str(stdv),' Alpha_',num2str(alpha),'.mat'],...
+                'coefs','allPredMat');
+            
+            
+            for d = 1:length(coefs(1,:))
+                coefsS{s,d}{c} = coefs{1,d};
+                featsS{s,d}{c} = allPredMat{1,d};
+            end
+            
+            clear  coefs allPredMat
+            
+        end
+        
+        
+        
+        
+        load(['/Volumes/Cerebro/Recording Data/',Name,'/Predict from Neurons/OutPredResultsTimePaper Cond_',num2str(intCondO),' TSeg_',num2str(eventO),' spdSmt_',num2str(spdSmt),' Sigma_', num2str(stdv),' Alpha_',num2str(alpha),'.mat'],...
+            'coefs','allPredMat');
+        
+        
+        for d = 1:length(coefs(1,:))
+            coefsO{s,d}{1} = coefs{1,d};
+            featsO{s,d}{1} = allPredMat{1,d};
+        end
+        
+        
+        clear  coefs  allPredMat
+        
+        
+        
+        load(['/Volumes/Cerebro/Recording Data/',Name,'/Neurons.mat'])
+        nShank{s} = cell2mat(Neurons(:,3));
+        
+        
+        s = s+1;
+        clearvars -except m ss  sessionsMap s coefsS coefsO featsO featsS nShank toPlot
+        
+    end
+end
+
+toPlot.E{1,1} = coefsS; 
+toPlot.E{1,2} = coefsO;
+toPlot.E{1,3} = featsS;
+toPlot.E{1,4} = featsO;
+toPlot.E{1,5} = nShank;
+
+clearvars -except toPlot sessionsMap
+
 
 end
 
@@ -545,7 +629,7 @@ panelB1Pos = [1+panelA1Size(1)+1.5 figSize(2)-panelBSize(2)-0.7];
 panelB2Pos = [1+panelA1Size(1)+panelBSize(1)+2.5 figSize(2)-panelBSize(2)-0.7];
 panelCPos = [1+panelA1Size(1)+panelBSize(1)*2+4 figSize(2)-panelCSize(2)-0.6];
 panelD1Pos = [1 figSize(2)-panelA1Size(2)-panelDSize(2)-2.2];
-panelD2Pos = [1+panelDSize(1)+1 figSize(2)-panelA1Size(2)-panelDSize(2)-2.2];
+panelD2Pos = [1 figSize(2)-panelA1Size(2)-panelDSize(2)*2-2.2];
 
 
 
@@ -1156,7 +1240,7 @@ lC.FontWeight = 'bold';
 %% Panel D, Preds performance
 
 sR2 = toPlot.D{1,1};
-oAUC = toPlot.D{1,3};
+oAUC = toPlot.D{1,2};
 
 for s = 1:length(sR2(1,:))
     s1R2(s,:) = sR2{1,s}(1,:);
@@ -1250,6 +1334,85 @@ axD(3).XTickLabel = {'10','25','50','All'};
 axD(3).Units = 'centimeters';
 axD(3).FontSize = 6;
 axD(3).Position = [panelD2Pos(1,1), panelD2Pos(1,2), panelDSize(1), panelDSize(2)];
+
+%% Panel E, Plot Distribution of encodings
+
+coefsS = toPlot.E{1,1};
+coefsO = toPlot.E{1,2};
+featsS = toPlot.E{1,3};
+featsO = toPlot.E{1,4};
+nShank = toPlot.E{1,5};
+
+
+% Calculate correlations between predictions and var explained by each neuron in each prediction
+d=12;
+
+for s = 1:length(coefsS(:,1))
+    
+    % get coefs
+    cS1{s} = coefsS{s,d}{1,1}(2:end)';
+    cS2{s} = coefsS{s,d}{1,2}(2:end)';
+    cO{s} = coefsO{s,d}{1,1}(2:end)';
+    
+    % get frs
+    frS1{s} = featsS{s,d}{1,1};
+    frS2{s} = featsS{s,d}{1,2}; 
+    frO{s} = featsO{s,d}{1,1};
+    
+    % calculate correlations between coefs vectors
+    c1 = corrcoef(cS1{s},cS2{s});
+    c2 = corrcoef(cS1{s},cO{s});
+    c3 = corrcoef(cS2{s},cO{s});
+    
+    corrs(s,:) = [c1(1,2), c2(1,2), c3(1,2)];
+   
+    % calculate feature importance
+    
+    
+    % Stop trial speeds
+    allFrS1 = frS1{s};
+    allCoefS1 = cS1{s};
+    allImpS1 = var(allFrS1 .* repmat(allCoefS1,length(allFrS1(:,1)),1));
+    
+    featImp{s}(:,1) =  allImpS1 ./ repmat(sum(allImpS1),1,length(allImpS1));
+    
+    % No Stop trial speeds
+    allFrS2 = frS2{s};
+    allCoefS2 = cS2{s};
+    allImpS2 = var(allFrS2 .* repmat(allCoefS2,length(allFrS2(:,1)),1));
+    
+    featImp{s}(:,2) =  allImpS2 ./ repmat(sum(allImpS2),1,length(allImpS2));
+    
+    % Trial outcomes
+    allFrO = frO{s};
+    allCoefO = cO{s};
+    allImpO = var(allFrO .* repmat(allCoefO,length(allFrO(:,1)),1));
+    
+    featImp{s}(:,3) =  allImpO ./ repmat(sum(allImpO),1,length(allImpO));
+   
+end
+
+
+% calculate cumsums of feat imp and # of neurs untill treshold
+tresh = 0.8;
+for s = 1:16
+    
+    featImpS1{s} = cumsum(sort(featImp{s}(:,1),'descend'));
+    featImpS2{s} = cumsum(sort(featImp{s}(:,2),'descend'));
+    featImpO{s} = cumsum(sort(featImp{s}(:,3),'descend'));
+    
+    [~,treshNum(s,1)] = min(abs(featImpS1{s} - tresh));
+    [~,treshNum(s,2)] = min(abs(featImpS2{s} - tresh));
+    [~,treshNum(s,3)] = min(abs(featImpO{s} - tresh));
+    
+end
+
+
+% Plot neurons variance explained in all predictions 
+
+
+
+
 
 % disp('Saving fig')
 % tic
