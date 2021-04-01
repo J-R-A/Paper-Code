@@ -631,9 +631,9 @@ panelB1Pos = [1+panelA1Size(1)+1.5 figSize(2)-panelBSize(2)-0.7];
 panelB2Pos = [1+panelA1Size(1)+panelBSize(1)+2.5 figSize(2)-panelBSize(2)-0.7];
 panelCPos = [1+panelA1Size(1)+panelBSize(1)*2+4 figSize(2)-panelCSize(2)-0.6];
 panelD1Pos = [1 figSize(2)-panelA1Size(2)-panelDSize(2)-2.2];
-panelD2Pos = [1 figSize(2)-panelA1Size(2)-panelDSize(2)*2-3.4];
-panelE1Pos = [1+panelDSize(1)+1.7 figSize(2)-panelA1Size(2)-panelESize(2)-2.2];
-panelE2Pos = [1+panelDSize(1)+1.7 figSize(2)-panelA1Size(2)-panelESize(2)*2-3.4];
+panelD2Pos = [1+panelDSize(1)+1 figSize(2)-panelA1Size(2)-panelESize(2)-2.2];
+panelEPos = [1+panelDSize(1)+panelESize(1)+2.4 figSize(2)-panelA1Size(2)-panelESize(2)-2.2];
+
 
 
 
@@ -641,7 +641,7 @@ lAPos = [-0.8 panelA1Size(2)-0.25];
 lBPos = [-1 panelBSize(2)-0.15];
 lCPos = [-0.8 panelCSize(2)-0.25];
 lDPos = [-0.8 panelDSize(2)-0.25];
-lEPos = [-1.1 panelESize(2)-0.25];
+lEPos = [-0.8 panelESize(2)-0.25];
 
 
 
@@ -1415,7 +1415,62 @@ end
 
 % Plot neurons variance explained in all predictions 
 
-% Example session 
+axes
+box on
+
+[axE h1 h2]=plotyy([0,1],[0,1],[0,1],[0,1]); 
+cla(axE(1)); 
+cla(axE(2));
+
+
+hold(axE(1),'on')
+plot(axE(1),1:length(featImpS1{s}),featImpS1{s},'Color',hitsColor)
+plot(axE(1),1:length(featImpS1{s}),featImpS2{s},'Color',faColor)
+plot(axE(1),1:length(featImpS1{s}),featImpO{s},'Color',spdColor)
+line([0 length(featImpS1{s})],[0.8 0.8],'Color','r','LineStyle','--','parent',axE(1))
+hold(axE(1),'off')
+ylim(axE(1),[0 1.05])
+xlim(axE(1),[0 100])
+ylabel(axE(1),'Expl Var')
+axE(1).XTick = [];
+axE(1).YColor = 'k';
+axE(1).Units = 'centimeters';
+axE(1).FontSize = 6;
+%axE(1).Position = [panelE2Pos(1,1), panelE2Pos(1,2), panelESize(1), panelESize(2)];
+
+
+hold(axE(2),'on')
+bar(axE(2),1,mean(treshNum(:,1)),'FaceColor',hitsColor,'EdgeColor',greyColor);
+bar(axE(2),2.5,mean(treshNum(:,2)),'FaceColor',faColor,'EdgeColor',greyColor);
+bar(axE(2),4,mean(treshNum(:,3)),'FaceColor',spdColor,'EdgeColor',greyColor);
+errorbar([1 2.5 4],mean(treshNum),std(treshNum)/sqrt(length(treshNum(:,1))),'.','Color','k','parent',axE(2))
+text(0.1,-4.8,'Neurons  /','FontSize',6,'parent',axE(2))
+text(3,-4.8,'Models','FontSize',6,'Color',greyColor,'parent',axE(2))
+hold(axE(2),'off')
+ylim(axE(2),[0 40])
+xlim(axE(2),[-0.5 5])
+ylabel(axE(2),'# Neurons to 0.8')
+axE(2).YTick = [0 12 24];
+axE(2).YColor = greyColor;
+axE(2).XColor = 'k';
+axE(2).XTick = [];
+axE(2).Units = 'centimeters';
+axE(2).FontSize = 6;
+axE(2).Position = [panelEPos(1,1), panelEPos(1,2), panelESize(1), panelESize(2)];
+
+lE = text(lEPos(1),lEPos(2),'e','Units','centimeters');
+lE.FontSize = 9;
+lE.FontWeight = 'bold';
+
+
+
+
+
+
+%{
+
+
+
 s = 13;
 
 axes
@@ -1427,6 +1482,9 @@ hold on
 plot(featImpO{s},'Color',spdColor)
 hold on
 text(48,0.7,'0.8 var expl','FontSize',5)
+
+
+
 
 
 line([0 length(featImpS1{s})],[0.8 0.8],'Color','r','LineStyle','--')
@@ -1479,7 +1537,4 @@ axE(2).Position = [panelE2Pos(1,1), panelE2Pos(1,2), panelESize(1), panelESize(2
 % disp('Finished saving fig')
 % toc
 
-
-
-
-
+%}
