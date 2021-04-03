@@ -360,7 +360,7 @@ for i = 1:6
 errorbar(i,mean(featImp{s}(nShank{s}==i,3)),std(featImp{s}(nShank{s}==i,3))/sqrt(sum(nShank{s}==i)),'o','MarkerFaceColor',spdColor,'MarkerEdgeColor',spdColor,'Color','k')
 hold on
 end
-ylim([-0.05 inf])
+
 xlim([0.5 6.5])
 xlabel('Shanks')
 ylabel('Fraction Var Exp')

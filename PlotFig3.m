@@ -624,6 +624,9 @@ panelBSize = [2 2];
 panelCSize = [3.5 2.5];
 panelDSize = [2 2];
 panelESize = [2 2];
+panelFSize = [2 2];
+panelG1Size = [3 2];
+panelG2Size = [2 2];
 
 
 panelA1Pos = [1 figSize(2)-panelA1Size(2)-0.5];
@@ -633,8 +636,9 @@ panelCPos = [1+panelA1Size(1)+panelBSize(1)*2+4 figSize(2)-panelCSize(2)-0.6];
 panelD1Pos = [1 figSize(2)-panelA1Size(2)-panelDSize(2)-2.2];
 panelD2Pos = [1+panelDSize(1)+1 figSize(2)-panelA1Size(2)-panelESize(2)-2.2];
 panelEPos = [1+panelDSize(1)+panelESize(1)+2.4 figSize(2)-panelA1Size(2)-panelESize(2)-2.2];
-
-
+panelFPos = [1+panelDSize(1)+panelESize(1)+panelFSize(1)+4.5 figSize(2)-panelA1Size(2)-panelFSize(2)-2.2];
+panelG1Pos = [1+panelDSize(1)+panelESize(1)+panelFSize(1)+panelG1Size(1)+5 figSize(2)-panelA1Size(2)-panelG1Size(2)-2.2];
+panelG2Pos = [1+panelDSize(1)+panelESize(1)+panelFSize(1)+panelG1Size(1)+5 figSize(2)-panelA1Size(2)-panelG1Size(2)-panelG2Size(2)-3.2];
 
 
 lAPos = [-0.8 panelA1Size(2)-0.25];
@@ -642,7 +646,8 @@ lBPos = [-1 panelBSize(2)-0.15];
 lCPos = [-0.8 panelCSize(2)-0.25];
 lDPos = [-0.8 panelDSize(2)-0.25];
 lEPos = [-0.8 panelESize(2)-0.25];
-
+lFPos = [-0.8 panelFSize(2)-0.25];
+lGPos = [-0.8 panelG1Size(2)-0.25];
 
 
 % Define colors to use
@@ -1463,9 +1468,161 @@ lE.FontSize = 9;
 lE.FontWeight = 'bold';
 
 
+%% Panel F, Correlation between encoders
+
+%Plot correlation between encoders
+
+mSizeScat = 20;
+mSizeErr = 3;
+
+
+axes
+box on
+
+scatter(ones(1,length(corrs)),corrs(:,1),mSizeScat,hitsColor,'filled','MarkerFaceAlpha',0.2)
+hold on
+errorbar(1,mean(corrs(:,1)),std(corrs(:,1))/sqrt(length(corrs(:,1))),'o','Color','k','MarkerFaceColor',hitsColor,'MarkerEdgeColor',hitsColor,'MarkerSize',mSizeErr)
+hold on
+scatter(ones(1,length(corrs))*2,corrs(:,2),mSizeScat,faColor,'filled','MarkerFaceAlpha',0.2)
+hold on
+errorbar(2,mean(corrs(:,2)),std(corrs(:,2))/sqrt(length(corrs(:,2))),'o','Color','k','MarkerFaceColor',faColor,'MarkerEdgeColor',faColor,'MarkerSize',mSizeErr)
+hold on
+scatter(ones(1,length(corrs))*3,corrs(:,3),mSizeScat,spdColor,'filled','MarkerFaceAlpha',0.2)
+hold on
+errorbar(3,mean(corrs(:,3)),std(corrs(:,3))/sqrt(length(corrs(:,3))),'o','Color','k','MarkerFaceColor',spdColor,'MarkerEdgeColor',spdColor,'MarkerSize',mSizeErr)
+xlim([0.5 3.5])
+ylim([-1 1])
+ylabel('Corr Coef')
+
+axF = gca;
+axF.Box = 'on';
+axF.XTick = 2;
+axF.XTickLabel = 'Models';
+axF.Units = 'centimeters';
+axF.FontSize = 6;
+axF.Position = [panelFPos(1,1), panelFPos(1,2), panelFSize(1), panelFSize(2)];
+
+lF = text(lFPos(1),lFPos(2),'f','Units','centimeters');
+lF.FontSize = 9;
+lF.FontWeight = 'bold';
+
+
+%% Panel G, Fraction of Variance per shanks
+
+%Group var exp per shank
+
+shanks = 1:6;
+
+for s = 1:16
+    for sk = shanks
+        
+%         [s1Fi, s1FiIdx] = sort(featImp{s}(:,1),'descend');
+%         s1Shanks = nShank{s}(s1FiIdx);
+%         s1Fi = s1Fi(1:treshNum(s,1));
+%         s1Shanks = s1Shanks(1:treshNum(s,1));
+        
+        
+        nSkImps{1}{s,sk} = featImp{s}(nShank{s} == sk,1);
+        nSkImps{2}{s,sk} = featImp{s}(nShank{s} == sk,2);
+        nSkImps{3}{s,sk} = featImp{s}(nShank{s} == sk,3);
+        
+        skImp{1}(s,sk) =  mean(nSkImps{1}{s,sk});
+        skImp{2}(s,sk) =  mean(nSkImps{2}{s,sk});
+        skImp{3}(s,sk) =  mean(nSkImps{3}{s,sk});
+        
+    end
+    
+end
+
+
+% Example session
+
+s = 1;
+filt = nShank{s} ~= 7;
+mSizeScat = 7;
+mSizeErr = 2;
+
+
+axes
+box on
+
+scatter(nShank{s}(filt)-0.25,featImp{s}(filt,1),mSizeScat,hitsColor,'filled','MarkerFaceAlpha',0.2) 
+hold on
+scatter(nShank{s}(filt),featImp{s}(filt,2),mSizeScat,faColor,'filled','MarkerFaceAlpha',0.2)
+hold on
+scatter(nShank{s}(filt)+0.25,featImp{s}(filt,3),mSizeScat,spdColor,'filled','MarkerFaceAlpha',0.2)
+
+for i = 1:6
+errorbar(i-0.25,mean(featImp{s}(nShank{s}==i,1)),std(featImp{s}(nShank{s}==i,1))/sqrt(sum(nShank{s}==i)),'o','MarkerFaceColor',hitsColor,'MarkerEdgeColor',hitsColor,'Color','k','MarkerSize',mSizeErr)
+hold on
+errorbar(i,mean(featImp{s}(nShank{s}==i,2)),std(featImp{s}(nShank{s}==i,2))/sqrt(sum(nShank{s}==i)),'o','MarkerFaceColor',faColor,'MarkerEdgeColor',faColor,'Color','k','MarkerSize',mSizeErr)
+hold on
+errorbar(i+0.25,mean(featImp{s}(nShank{s}==i,3)),std(featImp{s}(nShank{s}==i,3))/sqrt(sum(nShank{s}==i)),'o','MarkerFaceColor',spdColor,'MarkerEdgeColor',spdColor,'Color','k','MarkerSize',mSizeErr)
+end
+xlim([0.5 6.5])
+ylim([-0.05 inf])
+ylabel('Expl Var')
+xlabel('Shanks')
+
+axG = gca;
+axG(1).Box = 'on';
+axG(1).XTick = 1:6;
+axG(1).Units = 'centimeters';
+axG(1).FontSize = 6;
+axG(1).Position = [panelG1Pos(1,1), panelG1Pos(1,2), panelG1Size(1), panelG1Size(2)];
+
+lG = text(lGPos(1),lGPos(2),'g','Units','centimeters');
+lG.FontSize = 9;
+lG.FontWeight = 'bold';
+
+% All Sessions
+
+allSnksS.S1 = cell2mat(nSkImps{1,1}(:,1));
+allSnksS.S2 = cell2mat(nSkImps{1,1}(:,2));
+allSnksS.S3 = cell2mat(nSkImps{1,1}(:,3));
+allSnksS.S4 = cell2mat(nSkImps{1,1}(:,4));
+allSnksS.S5 = cell2mat(nSkImps{1,1}(:,5));
+allSnksS.S6 = cell2mat(nSkImps{1,1}(:,6));
+
+offSet = 0.5;
+offSet2 = offSet + 0.3;
+
+allSnksNS.S1 = cell2mat(nSkImps{1,2}(:,1))+offSet;
+allSnksNS.S2 = cell2mat(nSkImps{1,2}(:,2))+offSet;
+allSnksNS.S3 = cell2mat(nSkImps{1,2}(:,3))+offSet;
+allSnksNS.S4 = cell2mat(nSkImps{1,2}(:,4))+offSet;
+allSnksNS.S5 = cell2mat(nSkImps{1,2}(:,5))+offSet;
+allSnksNS.S6 = cell2mat(nSkImps{1,2}(:,6))+offSet;
+
+allSnksO.S1 = cell2mat(nSkImps{1,2}(:,1))+ offSet2;
+allSnksO.S2 = cell2mat(nSkImps{1,2}(:,2))+ offSet2;
+allSnksO.S3 = cell2mat(nSkImps{1,2}(:,3))+ offSet2;
+allSnksO.S4 = cell2mat(nSkImps{1,2}(:,4))+ offSet2;
+allSnksO.S5 = cell2mat(nSkImps{1,2}(:,5))+ offSet2;
+allSnksO.S6 = cell2mat(nSkImps{1,2}(:,6))+ offSet2;
+
+
+violinplot(allSnksS,[],'ViolinColor',hitsColor);
+hold on
+violinplot(allSnksNS,[],'ViolinColor',faColor);
+hold on
+violinplot(allSnksO,[],'ViolinColor',spdColor);
 
 
 
+
+axes
+box on
+
+violinplot(allSnksS);
+xlim([0 7])
+axG(2) = gca;
+axG(2).Box = 'on';
+axG(2).XTick = 1:6;
+axG(2).Units = 'centimeters';
+axG(2).FontSize = 6;
+axG(2).Position = [panelG2Pos(1,1), panelG2Pos(1,2), panelG2Size(1), panelG2Size(2)];
+ 
 
 %{
 
