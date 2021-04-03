@@ -625,8 +625,8 @@ panelCSize = [3.5 2.5];
 panelDSize = [2 2];
 panelESize = [2 2];
 panelFSize = [2 2];
-panelG1Size = [3 2];
-panelG2Size = [2 2];
+panelGSize = [2.8 1.2];
+
 
 
 panelA1Pos = [1 figSize(2)-panelA1Size(2)-0.5];
@@ -637,8 +637,10 @@ panelD1Pos = [1 figSize(2)-panelA1Size(2)-panelDSize(2)-2.2];
 panelD2Pos = [1+panelDSize(1)+1 figSize(2)-panelA1Size(2)-panelESize(2)-2.2];
 panelEPos = [1+panelDSize(1)+panelESize(1)+2.4 figSize(2)-panelA1Size(2)-panelESize(2)-2.2];
 panelFPos = [1+panelDSize(1)+panelESize(1)+panelFSize(1)+4.5 figSize(2)-panelA1Size(2)-panelFSize(2)-2.2];
-panelG1Pos = [1+panelDSize(1)+panelESize(1)+panelFSize(1)+panelG1Size(1)+5 figSize(2)-panelA1Size(2)-panelG1Size(2)-2.2];
-panelG2Pos = [1+panelDSize(1)+panelESize(1)+panelFSize(1)+panelG1Size(1)+5 figSize(2)-panelA1Size(2)-panelG1Size(2)-panelG2Size(2)-3.2];
+panelG1Pos = [1+panelDSize(1)+panelESize(1)+panelFSize(1)+panelGSize(1)+5 figSize(2)-panelA1Size(2)-panelGSize(2)-2.2];
+panelG2Pos = [1+panelDSize(1)+panelESize(1)+panelFSize(1)+panelGSize(1)+5 figSize(2)-panelA1Size(2)-panelGSize(2)*2-3.2];
+panelG3Pos = [1+panelDSize(1)+panelESize(1)+panelFSize(1)+panelGSize(1)+5 figSize(2)-panelA1Size(2)-panelGSize(2)*3-3.2];
+panelG4Pos = [1+panelDSize(1)+panelESize(1)+panelFSize(1)+panelGSize(1)+5 figSize(2)-panelA1Size(2)-panelGSize(2)*4-3.2];
 
 
 lAPos = [-0.8 panelA1Size(2)-0.25];
@@ -647,7 +649,7 @@ lCPos = [-0.8 panelCSize(2)-0.25];
 lDPos = [-0.8 panelDSize(2)-0.25];
 lEPos = [-0.8 panelESize(2)-0.25];
 lFPos = [-0.8 panelFSize(2)-0.25];
-lGPos = [-0.8 panelG1Size(2)-0.25];
+lGPos = [-0.8 panelGSize(2)-0.25];
 
 
 % Define colors to use
@@ -1516,15 +1518,25 @@ shanks = 1:6;
 for s = 1:16
     for sk = shanks
         
-%         [s1Fi, s1FiIdx] = sort(featImp{s}(:,1),'descend');
-%         s1Shanks = nShank{s}(s1FiIdx);
-%         s1Fi = s1Fi(1:treshNum(s,1));
-%         s1Shanks = s1Shanks(1:treshNum(s,1));
+         [s1Fi, s1FiIdx] = sort(featImp{s}(:,1),'descend');
+         s1Shanks = nShank{s}(s1FiIdx);
+         s1Fi = s1Fi(1:treshNum(s,1));
+         s1Shanks = s1Shanks(1:treshNum(s,1));
+         
+         [s2Fi, s2FiIdx] = sort(featImp{s}(:,2),'descend');
+         s2Shanks = nShank{s}(s2FiIdx);
+         s2Fi = s2Fi(1:treshNum(s,2));
+         s2Shanks = s2Shanks(1:treshNum(s,2));
+         
+         [oFi, oFiIdx] = sort(featImp{s}(:,3),'descend');
+         oShanks = nShank{s}(oFiIdx);
+         oFi = oFi(1:treshNum(s,3));
+         oShanks = oShanks(1:treshNum(s,3));
         
         
-        nSkImps{1}{s,sk} = featImp{s}(nShank{s} == sk,1);
-        nSkImps{2}{s,sk} = featImp{s}(nShank{s} == sk,2);
-        nSkImps{3}{s,sk} = featImp{s}(nShank{s} == sk,3);
+        nSkImps{1}{s,sk} = s1Fi(s1Shanks == sk,1);
+        nSkImps{2}{s,sk} = s2Fi(s2Shanks == sk,1);
+        nSkImps{3}{s,sk} = oFi(oShanks == sk,1);
         
         skImp{1}(s,sk) =  mean(nSkImps{1}{s,sk});
         skImp{2}(s,sk) =  mean(nSkImps{2}{s,sk});
@@ -1569,7 +1581,7 @@ axG(1).Box = 'on';
 axG(1).XTick = 1:6;
 axG(1).Units = 'centimeters';
 axG(1).FontSize = 6;
-axG(1).Position = [panelG1Pos(1,1), panelG1Pos(1,2), panelG1Size(1), panelG1Size(2)];
+axG(1).Position = [panelG1Pos(1,1), panelG1Pos(1,2), panelGSize(1), panelGSize(2)];
 
 lG = text(lGPos(1),lGPos(2),'g','Units','centimeters');
 lG.FontSize = 9;
@@ -1584,8 +1596,8 @@ allSnksS.S4 = cell2mat(nSkImps{1,1}(:,4));
 allSnksS.S5 = cell2mat(nSkImps{1,1}(:,5));
 allSnksS.S6 = cell2mat(nSkImps{1,1}(:,6));
 
-offSet = 0.5;
-offSet2 = offSet + 0.3;
+offSet = 0;
+offSet2 = 0;
 
 allSnksNS.S1 = cell2mat(nSkImps{1,2}(:,1))+offSet;
 allSnksNS.S2 = cell2mat(nSkImps{1,2}(:,2))+offSet;
@@ -1602,11 +1614,10 @@ allSnksO.S5 = cell2mat(nSkImps{1,2}(:,5))+ offSet2;
 allSnksO.S6 = cell2mat(nSkImps{1,2}(:,6))+ offSet2;
 
 
-violinplot(allSnksS,[],'ViolinColor',hitsColor);
-hold on
-violinplot(allSnksNS,[],'ViolinColor',faColor);
-hold on
-violinplot(allSnksO,[],'ViolinColor',spdColor);
+% hold on
+% violinplot(allSnksNS,[],'ViolinColor',faColor);
+% hold on
+% violinplot(allSnksO,[],'ViolinColor',spdColor);
 
 
 
@@ -1614,14 +1625,44 @@ violinplot(allSnksO,[],'ViolinColor',spdColor);
 axes
 box on
 
-violinplot(allSnksS);
+violinplot(allSnksS,[],'ViolinColor',hitsColor,'ShowMean',true,'width',0.3,'ShowData',false);
 xlim([0 7])
+ylim([-0.05 0.5])
 axG(2) = gca;
 axG(2).Box = 'on';
 axG(2).XTick = 1:6;
 axG(2).Units = 'centimeters';
 axG(2).FontSize = 6;
-axG(2).Position = [panelG2Pos(1,1), panelG2Pos(1,2), panelG2Size(1), panelG2Size(2)];
+axG(2).Position = [panelG2Pos(1,1), panelG2Pos(1,2), panelGSize(1), panelGSize(2)];
+
+
+
+axes
+box on
+
+violinplot(allSnksNS,[],'ViolinColor',faColor,'ShowMean',true,'width',0.3,'ShowData',false);
+xlim([0 7])
+ylim([-0.05 0.3])
+axG(3) = gca;
+axG(3).Box = 'on';
+axG(3).XTick = 1:6;
+axG(3).Units = 'centimeters';
+axG(3).FontSize = 6;
+axG(3).Position = [panelG3Pos(1,1), panelG3Pos(1,2), panelGSize(1), panelGSize(2)];
+
+
+axes
+box on
+
+violinplot(allSnksO,[],'ViolinColor',spdColor,'ShowMean',true,'width',0.3,'ShowData',false);
+xlim([0 7])
+ylim([-0.05 0.3])
+axG(4) = gca;
+axG(4).Box = 'on';
+axG(4).XTick = 1:6;
+axG(4).Units = 'centimeters';
+axG(4).FontSize = 6;
+axG(4).Position = [panelG4Pos(1,1), panelG4Pos(1,2), panelGSize(1), panelGSize(2)];
  
 
 %{
