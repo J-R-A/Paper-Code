@@ -1278,74 +1278,57 @@ errsO = eO;
 mnsO = mO;
 
 
-% Speed preds 
+% All Preds
 
-axes
-box on
+[axD, ~, ~]=plotyy([0,1],[0,1],[0,1],[0,1]); 
+cla(axD(1)); 
+cla(axD(2));
 
-h1 = bar(mnsS,'grouped');
-h1(1).FaceColor = hitsColor;
-h1(1).EdgeColor = hitsColor;
-h1(2).FaceColor = faColor;
-h1(2).EdgeColor = faColor;
-hold on
-offS = h1(2).XOffset;
 
-for  i = 1:length(mnsS(:,1))
-    
-    errorbar(i - offS,mnsS(i,1),errsS(i,1),'Color','k')
-    errorbar(i + offS,mnsS(i,2),errsS(i,2),'Color','k')
-    
-end
+xS = [1 5 9 13];
+xNS = [2 6 10 14];
+xO = [3 7 11 15];
 
-xlim([0 5])
-ylim([0 1])
-xlabel('Sound Start (cm)')
-ylabel('R2')
-title('Speed')
+hold(axD(1),'on')
+bar(axD(1),xS,mnsS(:,1),0.2,'FaceColor',hitsColor);
+errorbar(axD(1),xS,mnsS(:,1),errsS(:,1),'.','Color','k')
+bar(axD(1),xNS,mnsS(:,2),0.2,'FaceColor',faColor);
+errorbar(axD(1),xNS,mnsS(:,2),errsS(:,2),'.','Color','k')
+hold(axD(1),'off')
+ylim(axD(1),[0 1.05])
+xlim(axD(1),[-1 17])
+ylabel(axD(1),'R2')
+title(axD(1),'Model Perfs')
 
-axD(1) = gca;
 axD(1).YTick = [0 0.5 1];
-axD(1).XTick = 1:4;
+axD(1).XTick = [2 6 10 14];
 axD(1).XTickLabel = {'10','25','50','All'};
+axD(1).YColor = 'k';
 axD(1).Units = 'centimeters';
 axD(1).FontSize = 6;
 axD(1).Position = [panelD1Pos(1,1), panelD1Pos(1,2), panelDSize(1), panelDSize(2)];
+
+hold(axD(2),'on')
+bar(axD(2),xO,mnsO,0.2,'FaceColor',spdColor,'EdgeColor',greyColor)
+errorbar(axD(2),xO,mnsO,errsO,'.','Color','k')
+hold(axD(2),'off')
+ylim(axD(2),[0 1.05])
+xlim(axD(2),[-1 17])
+ylabel(axD(2),'AUC')
+
+axD(2).YTick = [0 0.5 1];
+axD(2).YColor = greyColor;
+axD(2).Units = 'centimeters';
+axD(2).FontSize = 6;
+
 
 lD = text(lDPos(1),lDPos(2),'d','Units','centimeters');
 lD.FontSize = 9;
 lD.FontWeight = 'bold';
 
 
-% Trial ID preds 
-
-axes
-box on
-
-h3 = bar(mnsO);
-h3(1).FaceColor = spdColor;
-h3(1).EdgeColor = spdColor;
-
-hold on
 
 
-for  i = 1:length(mnsO(1,:))
-    errorbar(i,mnsO(i),errsO(i),'Color','k')
-end
-
-xlim([0 5])
-ylim([0 1.1])
-xlabel('Sound Start (cm)')
-ylabel('AUC')
-title('Trial ID')
-
-axD(3) = gca;
-axD(3).YTick = [0 0.5 1];
-axD(3).XTick = 1:4;
-axD(3).XTickLabel = {'10','25','50','All'};
-axD(3).Units = 'centimeters';
-axD(3).FontSize = 6;
-axD(3).Position = [panelD2Pos(1,1), panelD2Pos(1,2), panelDSize(1), panelDSize(2)];
 
 %% Panel E, Plot Distribution of encodings
 
