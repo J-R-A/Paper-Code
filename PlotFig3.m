@@ -624,9 +624,8 @@ panelBSize = [2 2];
 panelCSize = [3.5 2.5];
 panelDSize = [2 2];
 panelESize = [2 2];
-panelFSize = [2 2];
-panelGSize = [2.8 1.2];
-
+panelGSize = [1.8 1.8];
+panelFSize = [2.8 1.2];
 
 
 panelA1Pos = [1 figSize(2)-panelA1Size(2)-0.5];
@@ -634,13 +633,12 @@ panelB1Pos = [1+panelA1Size(1)+1.5 figSize(2)-panelBSize(2)-0.7];
 panelB2Pos = [1+panelA1Size(1)+panelBSize(1)+2.5 figSize(2)-panelBSize(2)-0.7];
 panelCPos = [1+panelA1Size(1)+panelBSize(1)*2+4 figSize(2)-panelCSize(2)-0.6];
 panelD1Pos = [1 figSize(2)-panelA1Size(2)-panelDSize(2)-2.2];
-panelD2Pos = [1+panelDSize(1)+1 figSize(2)-panelA1Size(2)-panelESize(2)-2.2];
-panelEPos = [1+panelDSize(1)+panelESize(1)+2.4 figSize(2)-panelA1Size(2)-panelESize(2)-2.2];
-panelFPos = [1+panelDSize(1)+panelESize(1)+panelFSize(1)+4.5 figSize(2)-panelA1Size(2)-panelFSize(2)-2.2];
-panelG1Pos = [1+panelDSize(1)+panelESize(1)+panelFSize(1)+panelGSize(1)+5 figSize(2)-panelA1Size(2)-panelGSize(2)-2.2];
-panelG2Pos = [1+panelDSize(1)+panelESize(1)+panelFSize(1)+panelGSize(1)+5 figSize(2)-panelA1Size(2)-panelGSize(2)*2-3.2];
-panelG3Pos = [1+panelDSize(1)+panelESize(1)+panelFSize(1)+panelGSize(1)+5 figSize(2)-panelA1Size(2)-panelGSize(2)*3-3.2];
-panelG4Pos = [1+panelDSize(1)+panelESize(1)+panelFSize(1)+panelGSize(1)+5 figSize(2)-panelA1Size(2)-panelGSize(2)*4-3.2];
+panelEPos = [1 figSize(2)-panelA1Size(2)-panelDSize(2)-panelESize(2)-3];
+panelGPos = [1+panelDSize(1)+panelFSize(1)+3.6 figSize(2)-panelA1Size(2)-panelGSize(2)-2.2];
+panelF1Pos = [1+panelDSize(1)+2 figSize(2)-panelA1Size(2)-panelFSize(2)-2.2];
+panelF2Pos = [1+panelDSize(1)+2 figSize(2)-panelA1Size(2)-panelFSize(2)*2-2.25];
+panelF3Pos = [1+panelDSize(1)+2 figSize(2)-panelA1Size(2)-panelFSize(2)*3-2.3];
+panelF4Pos = [1+panelDSize(1)+2 figSize(2)-panelA1Size(2)-panelFSize(2)*4-2.35];
 
 
 lAPos = [-0.8 panelA1Size(2)-0.25];
@@ -649,7 +647,7 @@ lCPos = [-0.8 panelCSize(2)-0.25];
 lDPos = [-0.8 panelDSize(2)-0.25];
 lEPos = [-0.8 panelESize(2)-0.25];
 lFPos = [-0.8 panelFSize(2)-0.25];
-lGPos = [-0.8 panelGSize(2)-0.25];
+lGPos = [-1.2 panelGSize(2)-0.25];
 
 
 % Define colors to use
@@ -1280,6 +1278,9 @@ mnsO = mO;
 
 % All Preds
 
+axes 
+box on
+
 [axD, ~, ~]=plotyy([0,1],[0,1],[0,1],[0,1]); 
 cla(axD(1)); 
 cla(axD(2));
@@ -1479,17 +1480,19 @@ xlim([0.5 3.5])
 ylim([-1 1])
 ylabel('Corr Coef')
 
+line([0.5 3.5],[0 0],'Color',greyColor,'LineStyle','--')
+
 axF = gca;
 axF.Box = 'on';
 axF.XTick = 2;
 axF.XTickLabel = 'Models';
 axF.Units = 'centimeters';
 axF.FontSize = 6;
-axF.Position = [panelFPos(1,1), panelFPos(1,2), panelFSize(1), panelFSize(2)];
+axF.Position = [panelGPos(1,1), panelGPos(1,2), panelGSize(1), panelGSize(2)];
 
-lF = text(lFPos(1),lFPos(2),'f','Units','centimeters');
-lF.FontSize = 9;
-lF.FontWeight = 'bold';
+lG = text(lGPos(1),lGPos(2),'g','Units','centimeters');
+lG.FontSize = 9;
+lG.FontWeight = 'bold';
 
 
 %% Panel G, Fraction of Variance per shanks
@@ -1556,19 +1559,19 @@ errorbar(i+0.25,mean(featImp{s}(nShank{s}==i,3)),std(featImp{s}(nShank{s}==i,3))
 end
 xlim([0.5 6.5])
 ylim([-0.05 inf])
-ylabel('Expl Var')
-xlabel('Shanks')
+
+
 
 axG = gca;
 axG(1).Box = 'on';
-axG(1).XTick = 1:6;
+axG(1).XTick = [];
 axG(1).Units = 'centimeters';
 axG(1).FontSize = 6;
-axG(1).Position = [panelG1Pos(1,1), panelG1Pos(1,2), panelGSize(1), panelGSize(2)];
+axG(1).Position = [panelF1Pos(1,1), panelF1Pos(1,2), panelFSize(1), panelFSize(2)];
 
-lG = text(lGPos(1),lGPos(2),'g','Units','centimeters');
-lG.FontSize = 9;
-lG.FontWeight = 'bold';
+lF = text(lFPos(1),lFPos(2),'f','Units','centimeters');
+lF.FontSize = 9;
+lF.FontWeight = 'bold';
 
 % All Sessions
 
@@ -1611,12 +1614,15 @@ box on
 violinplot(allSnksS,[],'ViolinColor',hitsColor,'ShowMean',true,'width',0.3,'ShowData',false);
 xlim([0 7])
 ylim([-0.05 0.5])
+yl = ylabel('Expl Var');
+yl.Position = [-1.3 -0.1];
+
 axG(2) = gca;
 axG(2).Box = 'on';
 axG(2).XTick = 1:6;
 axG(2).Units = 'centimeters';
 axG(2).FontSize = 6;
-axG(2).Position = [panelG2Pos(1,1), panelG2Pos(1,2), panelGSize(1), panelGSize(2)];
+axG(2).Position = [panelF2Pos(1,1), panelF2Pos(1,2), panelFSize(1), panelFSize(2)];
 
 
 
@@ -1631,7 +1637,7 @@ axG(3).Box = 'on';
 axG(3).XTick = 1:6;
 axG(3).Units = 'centimeters';
 axG(3).FontSize = 6;
-axG(3).Position = [panelG3Pos(1,1), panelG3Pos(1,2), panelGSize(1), panelGSize(2)];
+axG(3).Position = [panelF3Pos(1,1), panelF3Pos(1,2), panelFSize(1), panelFSize(2)];
 
 
 axes
@@ -1640,12 +1646,15 @@ box on
 violinplot(allSnksO,[],'ViolinColor',spdColor,'ShowMean',true,'width',0.3,'ShowData',false);
 xlim([0 7])
 ylim([-0.05 0.3])
+xlabel('Shanks')
+
 axG(4) = gca;
 axG(4).Box = 'on';
 axG(4).XTick = 1:6;
+axG(4).XTickLabel = {'1','2','3','4','5','6'};
 axG(4).Units = 'centimeters';
 axG(4).FontSize = 6;
-axG(4).Position = [panelG4Pos(1,1), panelG4Pos(1,2), panelGSize(1), panelGSize(2)];
+axG(4).Position = [panelF4Pos(1,1), panelF4Pos(1,2), panelFSize(1), panelFSize(2)];
  
 
 %{
