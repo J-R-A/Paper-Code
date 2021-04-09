@@ -1454,12 +1454,12 @@ lE.FontSize = 9;
 lE.FontWeight = 'bold';
 
 
-%% Panel F, Correlation between encoders
+%% Panel G, Correlation between encoders
 
 %Plot correlation between encoders
 
-mSizeScat = 20;
-mSizeErr = 3;
+mSizeScat = 10;
+mSizeErr = 2;
 
 
 axes
@@ -1495,7 +1495,7 @@ lG.FontSize = 9;
 lG.FontWeight = 'bold';
 
 
-%% Panel G, Fraction of Variance per shanks
+%% Panel F, Fraction of Variance per shanks
 
 %Group var exp per shank
 
@@ -1535,10 +1535,10 @@ end
 
 % Example session
 
-s = 1;
+s = 13;
 filt = nShank{s} ~= 7;
-mSizeScat = 7;
-mSizeErr = 2;
+mSizeScat = 5;
+mSizeErr = 1.5;
 
 
 axes
@@ -1557,8 +1557,8 @@ errorbar(i,mean(featImp{s}(nShank{s}==i,2)),std(featImp{s}(nShank{s}==i,2))/sqrt
 hold on
 errorbar(i+0.25,mean(featImp{s}(nShank{s}==i,3)),std(featImp{s}(nShank{s}==i,3))/sqrt(sum(nShank{s}==i)),'o','MarkerFaceColor',spdColor,'MarkerEdgeColor',spdColor,'Color','k','MarkerSize',mSizeErr)
 end
-xlim([0.5 6.5])
-ylim([-0.05 inf])
+xlim([0 7])
+ylim([-0.02 0.15])
 
 
 
@@ -1592,12 +1592,12 @@ allSnksNS.S4 = cell2mat(nSkImps{1,2}(:,4))+offSet;
 allSnksNS.S5 = cell2mat(nSkImps{1,2}(:,5))+offSet;
 allSnksNS.S6 = cell2mat(nSkImps{1,2}(:,6))+offSet;
 
-allSnksO.S1 = cell2mat(nSkImps{1,2}(:,1))+ offSet2;
-allSnksO.S2 = cell2mat(nSkImps{1,2}(:,2))+ offSet2;
-allSnksO.S3 = cell2mat(nSkImps{1,2}(:,3))+ offSet2;
-allSnksO.S4 = cell2mat(nSkImps{1,2}(:,4))+ offSet2;
-allSnksO.S5 = cell2mat(nSkImps{1,2}(:,5))+ offSet2;
-allSnksO.S6 = cell2mat(nSkImps{1,2}(:,6))+ offSet2;
+allSnksO.S1 = cell2mat(nSkImps{1,3}(:,1))+ offSet2;
+allSnksO.S2 = cell2mat(nSkImps{1,3}(:,2))+ offSet2;
+allSnksO.S3 = cell2mat(nSkImps{1,3}(:,3))+ offSet2;
+allSnksO.S4 = cell2mat(nSkImps{1,3}(:,4))+ offSet2;
+allSnksO.S5 = cell2mat(nSkImps{1,3}(:,5))+ offSet2;
+allSnksO.S6 = cell2mat(nSkImps{1,3}(:,6))+ offSet2;
 
 
 % hold on
@@ -1719,12 +1719,13 @@ axE(2).Units = 'centimeters';
 axE(2).FontSize = 6;
 axE(2).Position = [panelE2Pos(1,1), panelE2Pos(1,2), panelESize(1), panelESize(2)];
 
-
-% disp('Saving fig')
-% tic
-% filename = '/Volumes/GoogleDrive/O meu disco/paper/RawFig';
-% print(f3,filename,'-depsc','-r300')
-% disp('Finished saving fig')
-% toc
-
 %}
+
+disp('Saving fig')
+tic
+filename = '/Volumes/GoogleDrive/O meu disco/paper/RawFig';
+print(f3,filename,'-depsc','-r300')
+disp('Finished saving fig')
+toc
+
+

@@ -175,7 +175,7 @@ classdef Violin < handle
             if ~isempty(lowhisker) && ~isempty(hiwhisker)
                 obj.WhiskerPlot = plot([pos pos], [lowhisker hiwhisker]);
             end
-            obj.MedianPlot = scatter(pos, quartiles(2), [], [1 1 1], 'filled');
+            obj.MedianPlot = scatter(pos, quartiles(2), 3, [1 1 1], 'filled');
 
             obj.NotchPlots = ...
                  scatter(pos, quartiles(2)-1.57*IQR/sqrt(length(data)), ...
