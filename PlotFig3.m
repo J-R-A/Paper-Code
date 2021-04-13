@@ -2,7 +2,7 @@ clearvars -except toPlot
 close all
 
 
-%%% Script to plot the different panels of the paper second figure
+%%% Script to plot the different panels of the paper third figure
 
 
 %% Load and process needed Data
