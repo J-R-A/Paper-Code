@@ -18,7 +18,8 @@ if ~exist('toPlot','var')
     stdv = 0.14; % Stdv of kernel used to smooth data
     def = 0.5; % Parameter of allowed deformation
     tSelectMethod = 1; % Method used to select similar trials: 0 - manual; 1 - based on correlations; 2 - based on vector similarity
-    intDels = [3 5 7 9 11]; % Delays on which the analysis was run
+    intDels = [1]; % Delays on which the analysis was run
+    delGroup = [1];
     intCond = 1; % Trial's condition: 1-hits; 2-misses; 3-correct rejections; 4-false alarms
     p1 = 0.25; %Cut trials p1 seconds after the higher area time across trials
     p2 = 0.5;  %Cut trials p2 seconds before the lowest moving after stopping time across trials
@@ -29,7 +30,7 @@ if ~exist('toPlot','var')
             
             disp(['loading delay ', num2str(intDels(d)),' from session ', num2str(sessions(s))])
             [Name] = SessionNumber2Name(sessions(s));
-            load(['/Volumes/Cerebro/Recording Data/',Name,'/Predict from Neurons/SpdPredLagsBootCheck Trials tsMethod_',num2str(tSelectMethod),' Cond_',num2str(intCond),' Delay_',num2str(intDels(d)),' P1_',num2str(p1),' P2_',num2str(p2),' Sigma_',num2str(stdv),' Deform_',num2str(def),'.mat'],'testData','origData');
+            load(['/Volumes/Cerebro/Recording Data/',Name,'/Predict from Neurons/SpdPredLagsBootCheck Trials tsMethod_',num2str(tSelectMethod),' Cond_',num2str(intCond),' Delay_',num2str(delGroup),'_',num2str(intDels),' P1_',num2str(p1),' P2_',num2str(p2),' Sigma_',num2str(stdv),' Deform_',num2str(def),'.mat'],'testData','origData');
             
             
             allOrig{s,d} = origData;
@@ -97,8 +98,13 @@ soundColor = [238,51,119] / 255;
 % f3.Position = [20, 15, figSize(1), figSize(2)];
 
 
-s = 3;
-d = 5;
+
+
+
+
+
+s = 1;
+d = 1;
 
 errLag = toPlot.A{1,2}{s,d}.RMSETest{1,1};
 errNoLag = toPlot.A{1,2}{s,d}.RMSETest{1,2};
@@ -118,6 +124,42 @@ hold on
 plot(predsNoLag,'r')
 hold on
 plot(predsLag,'g')
+
+
+% Get training predictions
+
+s = 3;
+d = 5;
+it = 1;
+
+if stdv >= 0.1;
+    sampling = 0.1 / 5;
+else
+    sampling = stdv / 5;
+end
+
+trials = unique(toPlot.A{1,2}{s,d}.testTrials{1,1}{1,it});
+neurons = toPlot.A{1,1}{s,d}.Neurons(trials,:);
+speeds = toPlot.A{1,1}{s,d}.Speeds(trials);
+tInfo = toPlot.A{1,1}{s,d}.trialInfo(trials,:);
+
+for t = 1:length(tInfo(:,1))
+    trialInfo{t,1}(:,1) = tInfo{t,1};
+    trialInfo{t,1}(:,2) = tInfo{t,2};
+    trialInfo{t,1}(:,3) = tInfo{t,3};
+end
+trialEvents = toPlot.A{1,1}{s,d}.eventTrials(trials);
+Distances = toPlot.A{1,1}{s,d}.Dists(trials);
+Times = toPlot.A{1,1}{s,d}.Times(trials);
+
+
+
+
+[kernel,diffKernel] = GenerateKernelNew(sampling,stdv);
+[tSpikes,tSpds,tTrialInfo,tEventTrials,tDsts,tTms,tTmsSpk] = CreateMergedMatrices(neurons,trialInfo,trialEvents,speeds,Distances,Times,stdv,sampling);
+[trSmtSpikes, trSmtSpikesDiff] = SmoothSpikeVecsNew(trPMats,stdv,kernel,diffKernel,tTms,tTmsSpk,sampling);
+[trLagSpikes] = LagsTransformation(trSmtSpikes,trSmtSpikesDiff,lags);
+
 
 
 
