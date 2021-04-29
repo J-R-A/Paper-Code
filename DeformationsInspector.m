@@ -31,3 +31,93 @@ for s = 1:length(sessions)
         end
     end
 end
+
+
+% Calculate test R2
+
+
+for s = 1:length(allTest(1,:))
+    for g = 1:length(allTest(:,1))
+        for d = 1:length(allTest{s,g}(:,1))
+            for def = 1:length(allTest{s,g}(1,:))
+                
+                allSpds = allOrig{s,g}{d,def}.Speeds;
+                tePredsLag{s,g}{d,def} = allTest{s,g}{d,def}.Preds{1,2};
+                tePredsNoLag{s,g}{d,def} = allTest{s,g}{d,def}.Preds{1,1};
+                for rs = 1:length(tePredsLag{s,g}{d,def}(1,:))
+                    teTrials = allTest{s,g}{d,def}.testTrials{1,2}{1,rs};
+                    teSpeeds{s,g}{d,def}{rs} = cell2mat(allSpds(teTrials));
+                    
+                    tePNoLag = tePredsNoLag{s,g}{d,def}{1,rs};
+                    RSSNoLag = sum((teSpeeds{s,g}{d,def}{rs} - tePNoLag).^2);
+                    TSSNoLag = sum((teSpeeds{s,g}{d,def}{rs} - mean(teSpeeds{s,g}{d,def}{rs})).^2);
+                    teR2{s,g}{d,def}(rs,1) = 1 - (RSSNoLag / TSSNoLag);
+                    
+                    tePLag = tePredsLag{s,g}{d,def}{1,rs};
+                    RSSLag = sum((teSpeeds{s,g}{d,def}{rs} - tePLag).^2);
+                    TSSLag = sum((teSpeeds{s,g}{d,def}{rs} - mean(teSpeeds{s,g}{d,def}{rs})).^2);
+                    teR2{s,g}{d,def}(rs,2) = 1 - (RSSLag / TSSLag);
+                end
+                
+            end
+        end
+    end
+end
+
+
+
+
+
+
+% Compare out of sample performance for different deformations of all sessions and groups 
+
+
+g = 1;
+sb = 1;
+figure
+for s = 1:length(teR2(1,:))
+    for d = 1:length(teR2{s,g}(:,1))
+        subplot(length(teR2(1,:)),length(teR2{s,g}(:,1)),sb)
+        
+        for def = 1:length(teR2{s,g}(1,:))
+            
+            plot(allTest{s,g}{d,def}.RMSETest{1,2})
+            hold on
+            
+        end
+        sb = sb+1;
+    end
+end
+
+
+
+
+% Compare out of sample difference in performance for different deformations of all sessions and groups 
+
+
+g = 1;
+sb = 1;
+figure
+for s = 1:length(teR2(1,:))
+    for d = 1:length(teR2{s,g}(:,1))
+        subplot(length(teR2(1,:)),length(teR2{s,g}(:,1)),sb)
+        
+        for def = 1:length(teR2{s,g}(1,:))
+            diffPerf =allTest{s,g}{d,def}.RMSETest{1,1} - allTest{s,g}{d,def}.RMSETest{1,2};
+            
+            plot(diffPerf)
+            line([1 length(diffPerf)],[0 0],'Color','r')
+            hold on
+            
+        end
+        sb = sb+1;
+    end
+end
+
+
+
+
+
+
+
+
