@@ -36,7 +36,7 @@ end
 
 Name =  Names{session,1};
 
-
+AlfonsoRenart1990
 
 %%% Get data from each session selected trials
 
@@ -68,7 +68,10 @@ regParams = testData.regParams;
 % length(intLags(1,:))
 for rs = 1:length(lags(1,:))
     
-    disp(['Processing sample ',num2str(rs),' of ',num2str(length(lags(1,:)))])
+    
+    if mod(rs,10) == 0
+        disp(['Processing sample ',num2str(rs),' of ',num2str(length(lags(1,:)))])
+    end
     
     rsTrialsTr = trTrials{rs};
     rsTrialsTe = teTrials{rs};
