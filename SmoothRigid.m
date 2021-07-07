@@ -18,13 +18,3 @@ end
 matSpikes = cell2mat(smtSpikes);
 end
 
-
-
-
-
-
-
-
-
-
-

@@ -1,4 +1,4 @@
-clear all
+edit clear all
 
 sessions = [1 13]; % Sessions to load data from
 stdvs = [0.14 0.2]; % Stdv of kernel used to smooth data
@@ -168,14 +168,27 @@ for s = 1:length(sessions)
 end
 
 
+rsp = 4;
+
+
+figure
+plot(allSpds{1,2}{1,3}.Te(:,rsp))
+hold on
+plot(allPreds{1,2}{1,3}.NoLagTe(:,rsp))
+hold on
+plot(allPreds{1,2}{1,3}.LagTe(:,rsp))
+hold on
+plot(allPreds{1,2}{1,3}.Orig.LagTe(:,rsp))
 
 
 
+figure
 
-
-
-
-
+plot(allSpds{1,2}{1,3}.Te(:,rsp) - allPreds{1,2}{1,3}.NoLagTe(:,rsp))
+hold on
+plot(allSpds{1,2}{1,3}.Te(:,rsp) - allPreds{1,2}{1,3}.LagTe(:,rsp))
+hold on
+plot(allSpds{1,2}{1,3}.Te(:,rsp) - allPreds{1,2}{1,3}.Orig.LagTe(:,rsp))
 
 
 

@@ -4,7 +4,7 @@ clearvars -except session intCond stdv deformation  machine intDel
 
 
 spdSmt = 500;
-p1 = 0.25;
+p1 = 0.5;
 p2 = 0.5;
 tSelectMethod = 1;
 delGroup = 1;
@@ -36,7 +36,6 @@ end
 
 Name =  Names{session,1};
 
-AlfonsoRenart1990
 
 %%% Get data from each session selected trials
 

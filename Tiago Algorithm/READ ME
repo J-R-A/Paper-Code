@@ -1,0 +1,6 @@
+The only function you need to change is test_lag_regressors_recovery_iterative.py
+you can also play with the evo_strategies.py if you want more/less/no plots
+or with the lag_evolutionary_strategies.py if you want some looks/prints of the error for the different perturbations
+
+I also send you the data file I use to run this algorithm so you can try it out of the box.
+If you need any help setting up the virtual environment for python I can write a tutorial or we can talk!
