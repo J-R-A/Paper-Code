@@ -110,7 +110,7 @@ for d = 1:length(pMats(1,:))
 %             spikes_d(spikesFilter) = 1;
             
             %allSpikes{1,d}{a,1} = (spikes(spikesFilter) - times(1,1))';
-            allSpikes{1,d}{a,1} = spikes' - (times(1,1)-3.5*stdv);
+            allSpikes{1,d}{a,1} = spikes' - (times(1,1)-4*stdv);
             allNeuronsId{1,d}{a,1} = ones(length(allSpikes{1,d}{a}),1) * n ;
             allTrialsId{1,d}{a,1} = ones(length(allSpikes{1,d}{a}),1) * t ;
             a = a+1;
@@ -123,8 +123,8 @@ for d = 1:length(pMats(1,:))
     mergedTimes = cell2mat(allTimes{1,d});
     mergedSpeeds = cell2mat(Speeds{1,d});
     
-     disp(['Saving data for session ',Name,' trials group ',num2str(d)])
-     save([machinePath,'Cerebro/Recording Data/',Name,'/Predict from Neurons/LagsAlgoTrials Delay_',num2str(delGroup),'_',num2str(d),' Stdv_',num2str(stdv),'.mat'],'mergedSpikes','mergedNeuronsId','mergedTrialsId','mergedTimes','mergedSpeeds')
+    disp(['Saving data for session ',Name,' trials group ',num2str(d)])
+    save([machinePath,'Cerebro/Recording Data/',Name,'/Predict from Neurons/LagsAlgoTrials Delay_',num2str(delGroup),'_',num2str(d),' Stdv_',num2str(stdv),'.mat'],'mergedSpikes','mergedNeuronsId','mergedTrialsId','mergedTimes','mergedSpeeds')
     
 end
 

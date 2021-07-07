@@ -7,7 +7,7 @@ folderPath = '/Volumes/Cerebro/Recording Data/'+Name+'/Predict from Neurons/'
 del_group = 1
 stdv = 0.14
 
-for int_del in range(1,6):
+for int_del in range(1,5):
     print(int_del)
     loadName = 'LagsAlgoTrials Delay_'+str(del_group)+'_'+str(int_del)+' Stdv_'+str(stdv)+'.mat'
     saveName = 'LagsAlgoTrials Delay_'+str(del_group)+'_'+str(int_del)+' Stdv_'+str(stdv)
